@@ -1,0 +1,86 @@
+package com.kwg.controller;
+
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kwg.model.CenproURLStatus;
+import com.kwg.utility.SendMailUtility;
+
+@RestController
+public class CheckUrlController  {
+	@Autowired
+	private SendMailUtility sendMailUtility;
+	private Date date ;
+	
+	
+	
+	
+	public  String urlString = "http://localhost:8088/getsmartsource/";
+	private boolean isWorking=false;
+	private int code=500;
+	CenproURLStatus cenproURLStatus;
+	
+	{
+		//date
+		  date = new Date(); 
+		 System.out.println(date);
+         //long time = date.getTime(); 
+          
+		
+	}
+	@GetMapping("/getstatus")
+	public ResponseEntity<CenproURLStatus> checkUrlStatus() {
+		try {
+			URL u = new URL (urlString);
+			HttpURLConnection huc =  ( HttpURLConnection )  u.openConnection (); 
+			huc.setRequestMethod ("GET");  //OR  huc.setRequestMethod ("HEAD"); 
+			huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
+			huc.connect () ; 
+
+
+
+			isWorking=true;
+			code = huc.getResponseCode();
+			cenproURLStatus=new CenproURLStatus();
+			cenproURLStatus.setStatusCode(code);
+			cenproURLStatus.setWorking(isWorking);
+			cenproURLStatus.setStatus("Working");
+			cenproURLStatus.setTimestamp(date);
+
+			
+			
+			
+			
+			//send mail to manager
+			//sendMailUtility.sendMail("sourabh101094@gmail.com", "Cenpro's URL status on 01/04/2021 at 9:45", "Hi Everyhting is working");
+			sendMailUtility.sendEmailNew("sourabh101094@gmail.com", "Cenpro's URL status on "+date,cenproURLStatus);
+
+
+			return new ResponseEntity<CenproURLStatus>(cenproURLStatus, HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println("NOT-WORKING");
+			
+			isWorking=false;
+			cenproURLStatus=new CenproURLStatus();
+			cenproURLStatus.setStatusCode(code);
+			cenproURLStatus.setWorking(isWorking);
+			cenproURLStatus.setStatus("Not-Working");
+			cenproURLStatus.setTimestamp(date);
+			sendMailUtility.sendEmailNew("sourabh101094@gmail.com", "Cenpro's URL status on "+date,cenproURLStatus);
+
+
+			return new ResponseEntity<CenproURLStatus>(cenproURLStatus, HttpStatus.OK);
+
+		}
+
+	}
+
+}
