@@ -1,0 +1,17 @@
+Hi  Mahesh,
+<br/>
+
+<b>Subject<b>: Cenpros's URL status on 01/04/2021 <br/>//
+<br/>
+
+<b>Status &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Cenpro's URL</b>
+<br/>
+
+Working &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp http://localhost:8088/getsmartsource/
+
+
+
+<br/>
+
+Thanks & Regards,<br/>
+Sourabh <br/>
